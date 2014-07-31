@@ -281,7 +281,9 @@ class Chef
         bootstrap.config[:ssh_password] = @password
         bootstrap.config[:host_key_verify] = false
         bootstrap.config[:chef_node_name] = locate_config_value(:chef_node_name) || @server.name
-        bootstrap.config[:distro] = locate_config_value(:distro)
+        if locate_config_value(:distro)
+            bootstrap.config[:distro] = locate_config_value(:distro)
+        end
         bootstrap.config[:use_sudo] = true unless bootstrap.config[:ssh_user] == 'root'
         bootstrap.config[:template_file] = locate_config_value(:template_file)
         bootstrap.run
