@@ -285,8 +285,7 @@ class Chef
         bootstrap.config[:use_sudo] = true unless bootstrap.config[:ssh_user] == 'root'
         bootstrap.config[:template_file] = locate_config_value(:template_file)
         bootstrap.run
-        # This is a temporary fix until ohai 6.18.0 is released
-        ssh("gem install ohai --pre --no-ri --no-rdoc && chef-client").run
+        ssh("chef-client").run
       end
     end
   end
