@@ -63,6 +63,12 @@ class Chef
         :description => "The user to create and add the provided public key to authorized_keys, default is 'root'",
         :default => "root"
 
+      option :ssh_password,
+        :short => "-P PASSWORD",
+        :long => "--ssh-password PASSWORD",
+        :description => "The ssh password to use, default is a random generated one.",
+        :proc => Proc.new { |password| Chef::Config[:knife][:ssh_password] = password }
+
       option :identity_file,
         :short => "-i IDENTITY_FILE",
         :long => "--identity-file IDENTITY_FILE",
@@ -168,7 +174,11 @@ class Chef
       end
 
       def create_server
-        @password = SecureRandom.hex.gsub(/[i|l|0|1|I|L]/,'')
+        if locate_config_value(:ssh_password)
+          @password = locate_config_value(:ssh_password)
+        else
+          @password = SecureRandom.hex.gsub(/[i|l|0|1|I|L]/,'')
+        end
         @new_password = SecureRandom.hex.gsub(/[i|l|0|1|I|L]/,'')
 
         storage_options = {:size => locate_config_value(:hdd_size),
